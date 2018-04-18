@@ -24,11 +24,19 @@ single.sim = function(n, p, cutoff) {
 run_simulation = function(n_trials, n, p, cutoff) {
   sim.objs = replicate(n=n_trials, expr=(single.sim(n, p, cutoff)))
   sim.objs = unlist(sim.objs)
-  hist(sim.objs, xlab=paste("p-values"), main=paste("Histogram of p-values with \nn = ", n, "p = ", p))
+  save(sim.objs, n, p, file=paste("p-values for n =", n, "p =", p))
+}
+
+make_plot = function(datapath) {
+  load(datapath)
+  hist(sim.objs, xlab=paste("p-values"), main=paste("Histogram of p-values with \n n = ", n, "p = ", p))
 }
 
 for (i in c(100, 1000, 10000)) {
   mapply(FUN=run_simulation, n_trials=100, n=i, p=c(10, 20, 50), cutoff=0.5)
+  make_plot("p-values for n =", i, "p =", 10)
+  make_plot("p-values for n =", i, "p =", 20)
+  make_plot("p-values for n =", i, "p =", 50)
 }
 
 
